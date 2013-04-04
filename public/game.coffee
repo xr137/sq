@@ -7,8 +7,9 @@
   active:0
   # ставим флаг и меняем активного игрока
   set:({y,x})->
-    @field[y]?[x]=@active+1
-    @active=+!@active
+    if @field[y]?[x]==0
+      @field[y][x]=@active+1
+      @active=+!@active
   # проверяем, победил ли ходивший
   test:({y,x})->
     point=@field[y][x]

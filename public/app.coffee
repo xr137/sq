@@ -29,8 +29,8 @@ class ClientGame extends Game
     x=(if e.layerX? then e.layerX else e.offsetX)/@R|0
     y=(if e.layerY? then e.layerY else e.offsetY)/@R|0
     unless @active!=@player or @field[y]?[x]
-      @set({y,x})
-      socket.emit('step',{y,x})
+      @set {y,x}
+      socket.emit 'step',{y,x}
     no
   # методы прорисовки
   drawGrid:()->
