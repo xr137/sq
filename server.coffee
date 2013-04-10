@@ -1,29 +1,25 @@
-require './public/game'
 config=require './config'
+{Game}=require './public/game'
 class ServerGame extends Game
-  constructor:(@games,@users)->
+  constructor:(@users)->
     super config.side,config.line
-    @games.push(@)
-    @users.forEach ((u,i)->
-      u.emit('start',{config,player:i})
-      u.on 'step',(e)=>
-        if i==@active
-          @set(e)
-          @users[+!i].emit('set',e)
-          if test=@test(e) then @end(test-1)
-      ),@
-  end:(p)->
-    for u in @users then u.emit('end',p)
-    @games[@id]=null
-  step:()->
+    # весим события транспорта и сообщаем о начале игры
+    @users.forEach (socket,i)=>
+      socket.on 'step',(e)=>
+        if i==@active and rez=@set e
+          @users[+!i].emit 'set',e
+          # можно было отдать на откуп клиенту, но что бы тогда от сервера осталось?:)
+          @end rez-1 if rez>0
+      socket.on 'disconnect',=>@end +!i
+      socket.emit 'start',{config,player:i}
+  end:(win)->
+    socket.emit 'end',win for socket in @users
 class Application
-  constructor:->
-    @games=[]
   await:null
   onconnect:(socket)=>
     # если в очереди есть клиент - создаем с ним игру, нет - ставим в очередь
     @await=if @await
-      new ServerGame(@games,[@await,socket])
+      new ServerGame [@await,socket]
       null
     else socket
 # создаем сервер и приложение, на подключение клиента весим onconnect приложения
