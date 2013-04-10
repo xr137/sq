@@ -1,5 +1,7 @@
 class ClientGame extends Game
-  @start:=>@_game=new @ if CanvasRenderingContext2D?
+  @start:=>
+    @_game?.socket.disconnect()
+    @_game=new @ if CanvasRenderingContext2D?
   constructor:()->
     @socket=io.connect "http://#{location.host}:5467",{'reconnect':no,'force new connection':on}
     @socket.on 'error',=>@status 'Ошибка'
