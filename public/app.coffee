@@ -34,10 +34,9 @@ class ClientGame extends Game
     @socket.disconnect()
     alert 'Вы '+if d==@player then 'победили!' else 'проиграли!'
   onclick:(e)=>
-    {y,x}=@getXY(e)
-    unless @active!=@player or @field[y]?[x]
-      @set {y,x}
-      @socket.emit 'step',{y,x}
+    pos=@getXY(e)
+    if @active==@player and @set pos
+      @socket.emit 'step',pos
     no
   getXY:(ev)->
     if ev.offsetY then {y:ev.offsetY/@R|0,x:ev.offsetX/@R|0}
