@@ -24,7 +24,7 @@ class ClientGame extends Game
       layout.appendChild canvas
       @status()
   status:(d)=>
-    (@_info?=document.getElementById 'info').innerText=
+    (@_info?=document.getElementById 'info').innerHTML=
       d || if @active==@player then 'Ваш ход' else 'Ждем противника'
   set:(d)=>
     super d
@@ -34,12 +34,16 @@ class ClientGame extends Game
     @socket.disconnect()
     alert 'Вы '+if d==@player then 'победили!' else 'проиграли!'
   onclick:(e)=>
-    x=(if e.layerX? then e.layerX else e.offsetX)/@R|0
-    y=(if e.layerY? then e.layerY else e.offsetY)/@R|0
+    {y,x}=@getXY(e)
     unless @active!=@player or @field[y]?[x]
       @set {y,x}
       @socket.emit 'step',{y,x}
     no
+  getXY:(ev)->
+    if ev.offsetY then {y:ev.offsetY/@R|0,x:ev.offsetX/@R|0}
+    else
+      y:(window.pageYOffset+ev.clientY-ev.target.offsetTop)/@R|0
+      x:(window.pageXOffset+ev.clientX-ev.target.offsetLeft)/@R|0
   # методы прорисовки
   drawGrid:()->
     C=@context
