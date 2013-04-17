@@ -19,13 +19,13 @@ class ClientGame extends Game
       canvas.onclick=@onclick
       @context=canvas.getContext '2d'
       @drawGrid()
-      layout=document.getElementById 'layout'
-      layout.innerHTML=''
-      layout.appendChild canvas
+      @_layout.innerHTML=''
+      @_layout.appendChild canvas
       @status()
+  _layout:document.getElementById 'layout'
+  _info:document.getElementById 'info'
   status:(d)=>
-    (@_info?=document.getElementById 'info').innerHTML=
-      d || if @active==@player then 'Ваш ход' else 'Ждем противника'
+    @_info.innerHTML=d || if @active==@player then 'Ваш ход' else 'Ждем противника'
   set:(d)=>
     super d
     @draw d
@@ -34,7 +34,7 @@ class ClientGame extends Game
     @socket.disconnect()
     alert 'Вы '+if d==@player then 'победили!' else 'проиграли!'
   onclick:(e)=>
-    pos=@getXY(e)
+    pos=@getXY e
     if @active==@player and @set pos
       @socket.emit 'step',pos
     no

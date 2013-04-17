@@ -1,3 +1,4 @@
+io=require 'socket.io'
 config=require './config'
 {Game}=require './public/game'
 class ServerGame extends Game
@@ -23,6 +24,5 @@ class Application
       null
     else socket
 # создаем сервер и приложение, на подключение клиента весим onconnect приложения
-require('socket.io')
-  .listen(5467,{'log level':2,'browser client':no})
+io.listen(5467,{'log level':2,'browser client':no})
   .sockets.on 'connection',new Application().onconnect

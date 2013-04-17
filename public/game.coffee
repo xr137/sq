@@ -1,7 +1,7 @@
 (if window? then window else exports).Game=class
   constructor:(@side,@line)->
     # генерируем пустое поле
-    @field=(0 for [0...@side] for [0...@side])
+    @field=(0 for [1..@side] for [1..@side])
   # активный игрок
   active:0
   set:({y,x}={})->
